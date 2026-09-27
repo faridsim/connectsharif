@@ -1,0 +1,2 @@
+hello: main.cpp models/Message.h models/MessageType.h abstractions/MessageHandler.h abstractions/MessageObserver.h implementations/handlers/EmailMessageHandler.h implementations/handlers/SmsMessageHandler.h implementations/handlers/PushMessageHandler.h core/MessageHandlerFactory.h core/MessageProcessor.h implementations/observers/AuditMessageObserver.h implementations/observers/AlarmMessageObserver.h implementations/observers/LengthMessageObserver.h implementations/observers/LatestMessageObserver.h
+	g++ -std=c++17 -pthread -o hello main.cpp
