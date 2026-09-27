@@ -8,6 +8,13 @@
 class LatestMessageObserver final : public MessageObserver
 {
 public:
+    explicit LatestMessageObserver() = default;
+
+    LatestMessageObserver(const LatestMessageObserver&) = delete;
+    LatestMessageObserver(LatestMessageObserver&&) = delete;
+    LatestMessageObserver& operator=(const LatestMessageObserver&) = delete;
+    LatestMessageObserver& operator=(LatestMessageObserver&&) = delete;
+
     void Update(const Message& message) override
     {
         // prints yellow

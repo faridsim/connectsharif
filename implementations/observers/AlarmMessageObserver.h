@@ -7,6 +7,13 @@
 class AlarmMessageObserver final : public MessageObserver
 {
 public:
+    explicit AlarmMessageObserver() = default;
+
+    AlarmMessageObserver(const AlarmMessageObserver&) = delete;
+    AlarmMessageObserver(AlarmMessageObserver&&) = delete;
+    AlarmMessageObserver& operator=(const AlarmMessageObserver&) = delete;
+    AlarmMessageObserver& operator=(AlarmMessageObserver&&) = delete;
+
     void Update(const Message& message) override
     {
         if (message.payload != "alert")

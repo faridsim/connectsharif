@@ -5,7 +5,7 @@
 class MessageObserver
 {
 public:
-    MessageObserver() = default;
+    explicit MessageObserver() = default;
     MessageObserver(const MessageObserver&) = delete;
     MessageObserver(MessageObserver&&) = delete;
     MessageObserver& operator=(const MessageObserver&) = delete;

@@ -5,7 +5,7 @@
 class MessageHandler
 {
 public:
-    MessageHandler() = default;
+    explicit MessageHandler() = default;
     MessageHandler(const MessageHandler&) = delete;
     MessageHandler(MessageHandler&&) = delete;
     MessageHandler& operator=(const MessageHandler&) = delete;

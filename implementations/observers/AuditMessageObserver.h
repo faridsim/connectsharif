@@ -7,6 +7,13 @@
 class AuditMessageObserver final : public MessageObserver
 {
 public:
+    explicit AuditMessageObserver() = default;
+
+    AuditMessageObserver(const AuditMessageObserver&) = delete;
+    AuditMessageObserver(AuditMessageObserver&&) = delete;
+    AuditMessageObserver& operator=(const AuditMessageObserver&) = delete;
+    AuditMessageObserver& operator=(AuditMessageObserver&&) = delete;
+
     void Update(const Message& message) override
     {
         // prints blue

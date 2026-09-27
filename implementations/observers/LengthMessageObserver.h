@@ -7,6 +7,13 @@
 class LengthMessageObserver final : public MessageObserver
 {
 public:
+    explicit LengthMessageObserver() = default;
+
+    LengthMessageObserver(const LengthMessageObserver&) = delete;
+    LengthMessageObserver(LengthMessageObserver&&) = delete;
+    LengthMessageObserver& operator=(const LengthMessageObserver&) = delete;
+    LengthMessageObserver& operator=(LengthMessageObserver&&) = delete;
+
     void Update(const Message& message) override
     {
         // prints green

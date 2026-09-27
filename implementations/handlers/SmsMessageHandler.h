@@ -7,6 +7,13 @@
 class SmsMessageHandler final : public MessageHandler
 {
 public:
+    explicit SmsMessageHandler() = default;
+
+    SmsMessageHandler(const SmsMessageHandler&) = delete;
+    SmsMessageHandler(SmsMessageHandler&&) = delete;
+    SmsMessageHandler& operator=(const SmsMessageHandler&) = delete;
+    SmsMessageHandler& operator=(SmsMessageHandler&&) = delete;
+
     bool CanHandle(MessageType type) const override
     {
         return type == MessageType::Sms;

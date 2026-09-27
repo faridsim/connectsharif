@@ -12,7 +12,7 @@
 
 class MessageProcessor
 {
-    
+
 public:
 
     explicit MessageProcessor() = default;
@@ -21,14 +21,6 @@ public:
     MessageProcessor(MessageProcessor&&) = delete;
     MessageProcessor& operator=(const MessageProcessor&) = delete;
     MessageProcessor& operator=(MessageProcessor&&) = delete;
-
-
-private:
-    std::mutex mutex;
-    std::list<std::pair<MessageType, MessageObserver*>> observers;
-    static inline std::once_flag factoryOnce;
-    static inline std::unique_ptr<MessageHandlerFactory> factory;
-
 
     void Subscribe(MessageType type, MessageObserver& observer)
     {
@@ -56,12 +48,17 @@ private:
 
         factory->ResolveHandler(message)->Process(message);
 
-        for (MessageObserver* observer : Interested(message.type))
+        for (MessageObserver* observer : GetInterestedObservers(message.type))
             observer->Update(message);
     }
 
+private:
+    std::mutex mutex;
+    std::list<std::pair<MessageType, MessageObserver*>> observers;
+    static inline std::once_flag factoryOnce;
+    static inline std::unique_ptr<MessageHandlerFactory> factory;
 
-    std::vector<MessageObserver*> Interested(MessageType type)
+    std::vector<MessageObserver*> GetInterestedObservers(MessageType type)
     {
         std::vector<MessageObserver*> interested;
         std::lock_guard<std::mutex> lock(mutex);
@@ -72,9 +69,4 @@ private:
         }
         return interested;
     }
-
-
-
-
-
 };

@@ -7,6 +7,13 @@
 class EmailMessageHandler final : public MessageHandler
 {
 public:
+    explicit EmailMessageHandler() = default;
+
+    EmailMessageHandler(const EmailMessageHandler&) = delete;
+    EmailMessageHandler(EmailMessageHandler&&) = delete;
+    EmailMessageHandler& operator=(const EmailMessageHandler&) = delete;
+    EmailMessageHandler& operator=(EmailMessageHandler&&) = delete;
+
     bool CanHandle(MessageType type) const override
     {
         return type == MessageType::Email;
