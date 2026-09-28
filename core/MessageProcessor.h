@@ -27,15 +27,18 @@ public:
 
     void Subscribe(MessageType type, MessageObserver& observer)
     {
-        // Process may be copying this list on another thread. The lock publishes
-        // the new pair whole, so that copy never sees a half-written entry.
+        //One thread calls Subscribe while another calls Process
+        //threads call Subscribe together, for the same observer or for different ones
+        
         std::lock_guard<std::mutex> lock(mutex);
+        //list-pair 
         observers.emplace_back(type, &observer);
     }
-    
+
+
     void UnSubscribe(MessageType type, MessageObserver& observer)
     {
-        // A Process that already copied this pointer can still call Update.
+        //???Process that already copied this pointer can still call Update.
         // Removal only hides the observer from a Process that locks after this returns.
         std::lock_guard<std::mutex> lock(mutex);
         observers.remove(std::pair<MessageType, MessageObserver*>(type, &observer));
@@ -43,10 +46,8 @@ public:
 
     bool Process(const Message& message)
     {
-        // The caller must not change message while this runs. Several threads may
-        // each pass their own Message; this function does not share that object.
-        // call_once publishes factory to every thread. Handlers keep no mutable
-        // members, so sharing them needs no lock of their own.
+        //Later calls: flag is already set → lambda is skipped entirely.
+        //set thge factory
         std::call_once(factoryOnce, []
         {
             factory = std::make_unique<MessageHandlerFactory>();
@@ -59,14 +60,22 @@ public:
             return false;
         }
 
+        //interested is a local vector (created fresh on every Process call) 
+        //lg the subset of subscribed observers whose type matches the incoming message's type
+
         std::vector<MessageObserver*> interested;
         bool duplicate = false;
         {
-            // ponytail: one lock for ids and the observer list. Split them if an
+            
             // update profile shows them blocking each other.
             // Check and insert stay in this block. A gap between them lets two
             // threads both accept the same id.
             std::lock_guard<std::mutex> lock(mutex);
+            //processedIds.insert(5).second  // true  → 5 wasn't there, now it is
+            //processedIds.insert(5).second  // false → 5 was already there, nothing changed
+
+
+
             if (!processedIds.insert(message.id).second)
                 duplicate = true;
             else
@@ -78,6 +87,7 @@ public:
                 }
             }
         }
+
 
         if (duplicate)
         {
@@ -108,9 +118,18 @@ public:
     }
 
 private:
+
+
+   //guard observers and process ids
     std::mutex mutex;
+   //Process scans it to find observers to notify
+   //std::vector is faster choice for this 
     std::list<std::pair<MessageType, MessageObserver*>> observers;
+
     std::unordered_set<int> processedIds;
+    //?flag to be raisen once
     static inline std::once_flag factoryOnce;
+
+
     static inline std::unique_ptr<MessageHandlerFactory> factory;
 };

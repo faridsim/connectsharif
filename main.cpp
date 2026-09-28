@@ -20,6 +20,7 @@ int main()
         &audit, &alarm, &length, &latest
     };
 
+
     // a list of all message types
     const std::array<MessageType, 3> types{
         MessageType::Email,
@@ -27,14 +28,19 @@ int main()
         MessageType::Push
     };
 
+
     // instantiate the message processor
     MessageProcessor processor;
-
+    
+    //susbcribing 12 items
     // every observer subscribes to all message types
+    //enum values are cheap to copy ,so we dont use pointers
     for (MessageType type : types)
         for (MessageObserver* observer : observers)
             processor.Subscribe(type, *observer);
 
+
+    
     processor.Process(Message(1, MessageType::Email, "hello world"));
     processor.Process(Message(2, MessageType::Sms, "ping"));
     processor.Process(Message(3, MessageType::Push, "alert"));
@@ -49,3 +55,5 @@ int main()
 
     return 0;
 }
+
+
