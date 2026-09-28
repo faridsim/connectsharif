@@ -13,15 +13,21 @@ public:
     EmailMessageHandler(EmailMessageHandler&&) = delete;
     EmailMessageHandler& operator=(const EmailMessageHandler&) = delete;
     EmailMessageHandler& operator=(EmailMessageHandler&&) = delete;
-
+    //true if type is email
+    //not mandatory,but gives compile time error instead of creating new fucntion,when signatrues dont match (fogot const)
     bool CanHandle(MessageType type) const override
     {
         return type == MessageType::Email;
     }
 
-    void Process(Message message) override
+
+    void Process(Message) override
     {
-        std::cout << "EmailMessageHandler  | [" << message.id << "] : " << message.payload << '\n';
+        // No member state, so no lock. Concurrent cout lines may interleave; that is not a data race.
+        std::cout << "Sending email...\n";
         return;
     }
 };
+
+
+

@@ -19,9 +19,10 @@ public:
         return type == MessageType::Push;
     }
 
-    void Process(Message message) override
+    void Process(Message) override
     {
-        std::cout << "PushMessageHandler  | [" << message.id << "] : " << message.payload << '\n';
+        // No member state, so no lock. Concurrent cout lines may interleave; that is not a data race.
+        std::cout << "Sending push...\n";
         return;
     }
 };

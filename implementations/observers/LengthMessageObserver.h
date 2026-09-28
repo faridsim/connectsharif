@@ -16,6 +16,7 @@ public:
 
     void Update(const Message& message) override
     {
+        // No member state, so no lock. Concurrent cout lines may interleave; that is not a data race.
         // prints green
         std::cout << "\033[32mLength | [" << message.id << "] : " << message.payload.size() << " chars\033[0m\n";
     }

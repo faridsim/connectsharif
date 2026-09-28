@@ -19,9 +19,10 @@ public:
         return type == MessageType::Sms;
     }
 
-    void Process(Message message) override
+    void Process(Message) override
     {
-        std::cout << "SmsMessageHandler  | [" << message.id << "] : " << message.payload << '\n';
+        // No member state, so no lock. Concurrent cout lines may interleave; that is not a data race.
+        std::cout << "Sending SMS...\n";
         return;
     }
 };

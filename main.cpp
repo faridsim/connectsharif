@@ -5,6 +5,8 @@
 #include "implementations/observers/LengthMessageObserver.h"
 #include "models/Message.h"
 
+#include <array>
+
 int main()
 {
     // instantiate observers
@@ -13,22 +15,25 @@ int main()
     LengthMessageObserver length;
     LatestMessageObserver latest;
 
-    // create a list of observers
-    MessageObserver* observers[] = {&audit, &alarm, &length, &latest};
+    // create a list of observers (base-class pointers)
+    const std::array<MessageObserver*, 4> observers{
+        &audit, &alarm, &length, &latest
+    };
 
     // a list of all message types
-    MessageType types[] = {MessageType::Email, MessageType::Sms, MessageType::Push};
+    const std::array<MessageType, 3> types{
+        MessageType::Email,
+        MessageType::Sms,
+        MessageType::Push
+    };
 
-    
     // instantiate the message processor
     MessageProcessor processor;
 
     // every observer subscribes to all message types
     for (MessageType type : types)
-    {
         for (MessageObserver* observer : observers)
             processor.Subscribe(type, *observer);
-    }
 
     processor.Process(Message(1, MessageType::Email, "hello world"));
     processor.Process(Message(2, MessageType::Sms, "ping"));
@@ -36,7 +41,11 @@ int main()
 
     processor.UnSubscribe(MessageType::Email, alarm);
     processor.Process(Message(4, MessageType::Email, "alert"));
-    //no alarm message should be printed
+    // no alarm message should be printed
+
+    processor.Process(Message(1, MessageType::Email, "again"));
+    processor.Process(Message(5, MessageType::Email, ""));
+    processor.Process(Message(6, static_cast<MessageType>(99), "nope"));
 
     return 0;
 }

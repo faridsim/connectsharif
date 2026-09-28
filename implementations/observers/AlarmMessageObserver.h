@@ -16,6 +16,7 @@ public:
 
     void Update(const Message& message) override
     {
+        // No member state, so no lock. Concurrent cout lines may interleave; that is not a data race.
         if (message.payload != "alert")
             return;
 
@@ -23,3 +24,4 @@ public:
         std::cout << "\033[31mAlarm  | [" << message.id << "] : ALERT\033[0m\n";
     }
 };
+
